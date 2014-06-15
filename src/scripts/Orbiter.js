@@ -1,4 +1,8 @@
 pc.script.create("Orbiter", function (context) {
+    /**
+     * @name Orbiter
+     * @class A script extension that handles simple orbital movement.
+     */
     var Orbiter = function (entity) {
         this.entity = entity;
     };
@@ -12,12 +16,8 @@ pc.script.create("Orbiter", function (context) {
             this._eccentricity = 0;
             this._periapsis = 0;
             this._apoapsis = 0;
-            this.__defineGetter__('ecc', this.getEccentricity);
-            this.__defineSetter__('ecc', this.setEccentricity);
 
             this._parent = null;
-            this.__defineGetter__('parent', this.getParent);
-            this.__defineSetter__('parent', this.setParent);
         },
 
         update: function (dt) {
@@ -29,7 +29,13 @@ pc.script.create("Orbiter", function (context) {
             this.entity.setLocalPosition(this._periapsis * Math.sin(dt), 0, this._apoapsis * Math.cos(dt))
         },
 
-        setEccentricity: function(e) {
+        /**
+         * @property
+         * @name Orbiter#eccentricity
+         * @description The eccentricity of the Entity's orbit. Must be between 0 and 1.
+         * @type {number}
+         */
+        set eccentricity(e) {
             // Only allow ellipses
             if (0 < e && e < 1) {
                 this._periapsis = this.radius * (1 - e);
@@ -37,16 +43,20 @@ pc.script.create("Orbiter", function (context) {
                 this._eccentricity = e;
             }
         },
-
-        getEccentricity: function(e) {
+        get eccentricity() {
             return this._eccentricity;
         },
 
-        setParent: function(entity) {
+        /**
+         * @property
+         * @name Orbiter#parent
+         * @description The Entity about which this entity orbits.
+         * @type {Entity}
+         */
+        set parent(entity) {
             this._parent = entity;
         },
-
-        getParent: function() {
+        get parent() {
             return this._parent;
         }
     };

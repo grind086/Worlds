@@ -4,9 +4,14 @@ import subprocess
 from zipfile import ZipFile
 
 root = os.path.abspath("..")
+tmpdir = os.path.join(os.path.abspath("."), "temp")
+outdir = os.path.join(os.path.abspath("."), "output")
+
+compilation_level = "WHITESPACE_ONLY"
+COMP_LEVELS = ["WHITESPACE_ONLY", "WHITESPACE_ONLY", "SIMPLE_OPTIMIZATIONS", "ADVANCED_OPTIMIZATIONS"];
 
 def get_revision():
-    # Try and write the mercurial revision out to the file 'revision.py'
+    # Try and get the git revision number
     try:
         process = subprocess.Popen(['git', 'rev-parse', '--verify', '--short', 'HEAD'], shell=False, stdout=subprocess.PIPE)
         output = process.communicate()
@@ -34,8 +39,42 @@ def prep_submodules():
 	os.chdir(buildPath)
 	process = subprocess.Popen(["python", "build.py"], shell=False, stdout=subprocess.PIPE)
 	process.communicate()
-    
-def build():
+
+def build(dst):
+    global compilation_level
+    formatting = None
+    # Set options
+    if compilation_level == COMP_LEVELS[0]:
+        formatting = "pretty_print"
+
+    dependency_file = os.path.join(root, "dependencies.txt")
+    compiler_path = os.path.join(root, "closure/compiler.jar")
+    temp_path = os.path.join(root, "out.js")
+
+    dependencies = open(dependency_file, "r");
+
+    # Build and call command
+    cmd = ["java", "-jar", compiler_path, "--compilation_level", compilation_level, "--js_output_file=" + temp_path, "--manage_closure_dependencies", "true"]
+    if formatting:
+        cmd.append("--formatting")
+        cmd.append(formatting)
+
+    # Use ECMA script 5 which supports getters and setters
+    cmd.append("--language_in=ECMASCRIPT5")
+
+    for file in dependencies:
+        cmd.append( "--js=" + os.path.join(root, file.strip()))
+
+    retcode = subprocess.call(cmd)
+
+    # Copy output to build directory
+    if not os.path.exists(os.path.dirname(dst)):
+       os.mkdir(os.path.dirname(dst))
+    shutil.move(temp_path, dst)
+
+    return retcode
+
+def build2():
     # Path to the package
     packageFile = os.path.abspath('package.nw')
 

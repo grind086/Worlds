@@ -1,0 +1,5 @@
+game/core/core_core.js
+game/entity/entity_entity.js
+game/entity/entity_planet.js
+game/dialogue/dialogue_dialogue.js
+game/dialogue/dialogue_node.js
