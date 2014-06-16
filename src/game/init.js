@@ -1,0 +1,1 @@
+setTimeout(game.init.bind(game), 0);

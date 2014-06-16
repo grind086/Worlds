@@ -8,12 +8,8 @@ game.entity = function () {
      * @name game.entity.Entity
      * @class Base class for game entities
      */
-    var Entity = function() {};
+    var Entity = Class.extend({});
     Entity = pc.inherits(Entity, pc.fw.Entity);
-
-    Entity.prototype = {
-
-    };
 
     return {
         Entity: Entity,

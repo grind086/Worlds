@@ -1,4 +1,4 @@
-pc.script.create("Orbiter", function (context) {
+pc.script.create("orbiter", function (context) {
     /**
      * @name Orbiter
      * @class A script extension that handles simple orbital movement.
@@ -35,7 +35,7 @@ pc.script.create("Orbiter", function (context) {
          * @description The eccentricity of the Entity's orbit. Must be between 0 and 1.
          * @type {number}
          */
-        set eccentricity(e) {
+        setEccentricity: function(e) {
             // Only allow ellipses
             if (0 < e && e < 1) {
                 this._periapsis = this.radius * (1 - e);
@@ -43,7 +43,7 @@ pc.script.create("Orbiter", function (context) {
                 this._eccentricity = e;
             }
         },
-        get eccentricity() {
+        getEccentricity: function() {
             return this._eccentricity;
         },
 
@@ -53,10 +53,10 @@ pc.script.create("Orbiter", function (context) {
          * @description The Entity about which this entity orbits.
          * @type {Entity}
          */
-        set parent(entity) {
+        setParent: function(entity) {
             this._parent = entity;
         },
-        get parent() {
+        getParent: function() {
             return this._parent;
         }
     };

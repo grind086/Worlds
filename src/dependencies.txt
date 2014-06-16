@@ -1,5 +1,9 @@
 game/core/core_core.js
+game/core/core_log.js
+game/core/core_inheritance.js
 game/entity/entity_entity.js
 game/entity/entity_planet.js
+game/entity/entity_star.js
 game/dialogue/dialogue_dialogue.js
 game/dialogue/dialogue_node.js
+game/init.js
