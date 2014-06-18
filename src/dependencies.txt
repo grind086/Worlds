@@ -1,3 +1,6 @@
+engine/framework/components/orbit/orbit_system.js
+engine/framework/components/orbit/orbit_component.js
+engine/framework/components/orbit/orbit_data.js
 game/core/core_core.js
 game/core/core_log.js
 game/core/core_inheritance.js

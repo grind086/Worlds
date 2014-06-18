@@ -7,6 +7,7 @@ var game = {
 
         // Create the application and start the update loop
         var application = new pc.fw.Application(this.canvas);
+        var orbitsys = new pc.fw.OrbitComponentSystem(application.context);
         application.start();
 
         // Set the canvas to fill the window and automatically change resolution to be the same as the canvas size
@@ -19,12 +20,42 @@ var game = {
 
         // Debug
         if (true) {
+            //var material = new pc.scene.PhongMaterial
             // Create a planet
-            var star = new game.entity.Star();
-            var planet = new game.entity.Planet();
-            planet.setOrbiting(star);
+            var star = new game.entity.Star({
+                orbit: {
+                    enabled: false
+                },
+                light: {
+                    color: new pc.Color(1, 1, 0)
+                }
+            });
+            var planet = new game.entity.Star({
+                scale: .5,
+                orbit: {
+                    radius: 3,
+                    eccentricity: .2
+                },
+                light: {
+                    color: new pc.Color(0, 0, 1)
+                }
+            });
+            var planet2 = new game.entity.Star({
+                scale: .2,
+                orbit: {
+                    speed: -0.5 * Math.sqrt(2),
+                    radius: 1.05,
+                    eccentricity: .01
+                },
+                light: {
+                    color: new pc.Color(1, 0, 0)
+                }
+            });
+            star.setEulerAngles(0, 0, 10);
+            planet.setEulerAngles(0, 0, -10);
+            planet.setMaterial();
+
             window.planet = planet;
-            //console.log(planet.script.orbiter.radius);
 
             // Create an Entity with a camera component
             var camera = new pc.fw.Entity();
@@ -34,27 +65,29 @@ var game = {
 
             // Add the new Entities to the hierarchy
             application.context.root.addChild(star);
-            application.context.root.addChild(planet);
+            star.addChild(planet);
+            planet.addChild(planet2);
             application.context.root.addChild(camera);
 
             // Move the camera 10m along the z-axis
             camera.translate(0, 0, 10);
-
-            // Set an update function on the application's update event
-            var angle = 0;
-            application.on("update", function (dt) {
-                angle += dt;
-                if (angle > 360) {
-                    angle = 0;
-                }
-
-                // Move the planet in a circle
-                planet.setLocalPosition(3 * Math.sin(angle),.2*Math.cos(angle), 3 * Math.cos(angle));
-
-                //camera.setLocalPosition(4 * Math.sin(angle), 0, 4 * Math.cos(angle));
-            });
         }
 
         console.log("Game started with mode " + this.debugInfo.ScriptLoader.mode);
+    },
+
+    mergeOptions: function(options, defaults) {
+        if (!options) return defaults;
+
+        for (var key in defaults) {
+            if (defaults.hasOwnProperty(key)) {
+                if (!options.hasOwnProperty(key)) {
+                    options[key] = defaults[key];
+                } else {
+                    options[key] = options[key];
+                }
+            }
+        }
+        return options;
     }
 };
