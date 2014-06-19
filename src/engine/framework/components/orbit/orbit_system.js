@@ -87,8 +87,8 @@ pc.extend(pc.fw, function () {
                     item = this.dataStore[key];
                     if (item && item.data.enabled && item.entity.enabled) {
                         angle = item.data.angle + item.data.speed * dt;
-                        if (angle > 360) {
-                            angle -= 360;
+                        if (angle > 2 * Math.PI) {
+                            angle -= 2 * Math.PI;
                         }
                         item.data.angle = angle;
 

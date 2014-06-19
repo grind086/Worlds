@@ -14,13 +14,51 @@ var game = {
         application.setCanvasFillMode(pc.fw.FillMode.FILL_WINDOW);
         application.setCanvasResolution(pc.fw.ResolutionMode.AUTO);
 
-        application.context.scene.ambientLight = new pc.Color(0.2, 0.2, 0.2);
+        //application.context.scene.ambientLight = new pc.Color(0.2, 0.2, 0.2);
 
         this.application = application;
 
         // Debug
         if (true) {
-            //var material = new pc.scene.PhongMaterial
+            var nStars = 1;
+            function mkSystem(target, level) {
+                level = level || 0;
+                if (level > 5) return;
+
+                var nBodies = Math.floor(Math.random() * 10) + 1;
+
+                var body;
+                var scale;
+                var radius;
+                for (var i = 0; i < nBodies; i++) {
+                    scale = Math.random();
+                    radius = target.getLocalScale().data[0] + scale * (Math.random() * 2 + 1);
+
+                    var type = game.entity.Planet;
+                    if (Math.random() > 0.9 && nStars < 7) {
+                        type = game.entity.Star;
+                        nStars++;
+                    }
+
+                    body = new type({
+                        scale: scale,
+                        orbit: {
+                            angle: Math.random() * 360,
+                            radius: radius,
+                            speed: 3 * (Math.random() * 2 - 1),
+                            eccentricity: Math.random() * 0.02
+                        },
+                        light: {
+                            color: new pc.Color(Math.random(), Math.random(), Math.random())
+                        }
+                    });
+                    body.setEulerAngles(Math.random() * 90, Math.random() * 90, Math.random() * 90);
+                    target.addChild(body);
+
+                    if (Math.random() > 0.5) setTimeout(mkSystem.bind(this, body, level + 1),10);
+                }
+            }
+
             // Create a planet
             var star = new game.entity.Star({
                 orbit: {
@@ -30,32 +68,9 @@ var game = {
                     color: new pc.Color(1, 1, 0)
                 }
             });
-            var planet = new game.entity.Star({
-                scale: .5,
-                orbit: {
-                    radius: 3,
-                    eccentricity: .2
-                },
-                light: {
-                    color: new pc.Color(0, 0, 1)
-                }
-            });
-            var planet2 = new game.entity.Star({
-                scale: .2,
-                orbit: {
-                    speed: -0.5 * Math.sqrt(2),
-                    radius: 1.05,
-                    eccentricity: .01
-                },
-                light: {
-                    color: new pc.Color(1, 0, 0)
-                }
-            });
-            star.setEulerAngles(0, 0, 10);
-            planet.setEulerAngles(0, 0, -10);
-            planet.setMaterial();
 
-            window.planet = planet;
+            window.star = star;
+            var nPlanets = mkSystem(star);
 
             // Create an Entity with a camera component
             var camera = new pc.fw.Entity();
@@ -65,12 +80,13 @@ var game = {
 
             // Add the new Entities to the hierarchy
             application.context.root.addChild(star);
-            star.addChild(planet);
-            planet.addChild(planet2);
+            //star.addChild(planet);
+            //planet.addChild(planet2);
             application.context.root.addChild(camera);
 
             // Move the camera 10m along the z-axis
-            camera.translate(0, 0, 10);
+            camera.translate(0, 10, 10);
+            camera.lookAt(star.getPosition());
         }
 
         console.log("Game started with mode " + this.debugInfo.ScriptLoader.mode);

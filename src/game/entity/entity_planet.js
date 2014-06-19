@@ -32,6 +32,7 @@ pc.extend(game.entity, function () {
             scale = [s, s, s];
         }
         this.setLocalScale(scale[0], scale[1], scale[2]);
+        //this.setScale(scale[0], scale[1], scale[2])
 
         game.application.context.systems.orbit.addComponent(this, options.orbit);
     };
